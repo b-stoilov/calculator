@@ -1,15 +1,17 @@
 package main
 
 import (
+	"Calculator/store"
 	"fmt"
 	"net/http"
 )
 
 func main() {
+	store := store.NewStore()
 
-	http.HandleFunc("/evaluate", evaluateHandler)
-	http.HandleFunc("/validate", validateHandler)
-	http.HandleFunc("/errors", errorsHandler)
+	http.HandleFunc("/evaluate", evaluateHandler(store))
+	http.HandleFunc("/validate", validateHandler(store))
+	http.HandleFunc("/errors", errorsHandler(store))
 
 	fmt.Println("Server is running on port 8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

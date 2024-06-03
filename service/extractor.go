@@ -12,6 +12,7 @@ import (
 var re = regexp.MustCompile("[0-9]+")
 
 func ExtractExpression(expressionString string) models.Expression {
+	expressionString = utils.ConvertOperations(expressionString)
 	numbers := extractNumbers(expressionString)
 	operations := extractOperations(expressionString)
 
@@ -21,7 +22,6 @@ func ExtractExpression(expressionString string) models.Expression {
 }
 
 func extractNumbers(expressionString string) []int {
-	expressionString = utils.ConvertOperations(expressionString)
 	fmt.Println(expressionString)
 
 	numbersInString := re.FindAllString(expressionString, -1)

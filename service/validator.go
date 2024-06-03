@@ -2,6 +2,7 @@ package service
 
 import (
 	"Calculator/models"
+	"Calculator/store"
 	"errors"
 )
 
@@ -10,8 +11,8 @@ type ValidateResultDTO struct {
 	Reason string `json:"reason,omitempty"`
 }
 
-func Validate(expressionString string) ValidateResultDTO {
-	_, err := Evaluate(expressionString)
+func Validate(expressionString string, store *store.Store, url string) ValidateResultDTO {
+	_, err := Evaluate(expressionString, store, url)
 
 	if err != nil {
 		return ValidateResultDTO{Valid: false, Reason: err.Error()}
