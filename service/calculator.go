@@ -13,10 +13,10 @@ func Calculate(expression models.Expression) int {
 	}
 
 	for _, operation := range expression.Operations {
-		x := expression.Numbers[0]
-		y := expression.Numbers[1]
-
 		numbers := expression.Numbers
+
+		x := numbers[0]
+		y := numbers[1]
 
 		switch operation {
 		case "+":
