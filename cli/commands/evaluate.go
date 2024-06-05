@@ -2,12 +2,13 @@ package commands
 
 import (
 	"bytes"
-	"cli/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
+	_const "main/const"
+	"main/utils"
 	"net/http"
 )
 
@@ -23,35 +24,37 @@ type EvaluateRequest struct {
 
 var EvaluateCmd = &cobra.Command{
 	Use:   "evaluate [expression]",
-	Short: "Send a POST request",
+	Short: "Evaluate a mathematical expression",
 	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		data := args[0]
-		requestBody := map[string]string{"expression": data}
+	Run:   evaluate,
+}
 
-		jsonReqBody, err := json.MarshalIndent(requestBody, "", "  ")
+func evaluate(cmd *cobra.Command, args []string) {
+	data := args[0]
+	requestBody := map[string]string{"expression": data}
 
-		if err != nil {
-			log.Fatal(err)
-		}
+	jsonReqBody, err := json.MarshalIndent(requestBody, "", "  ")
 
-		response, err := http.Post(url+"/evaluate",
-			"application/json",
-			bytes.NewBuffer(jsonReqBody))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		fmt.Printf("Request:\n%s\n", string(jsonReqBody))
+	response, err := http.Post(_const.URL+"/evaluate",
+		"application/json",
+		bytes.NewBuffer(jsonReqBody))
 
-		if err != nil {
-			log.Fatalf("Failed to send POST request: %v", err)
-		}
+	fmt.Printf("Request:\n%s\n", string(jsonReqBody))
 
-		defer response.Body.Close()
+	if err != nil {
+		log.Fatalf("Failed to send POST request: %v", err)
+	}
 
-		responseBody, err := io.ReadAll(response.Body)
-		if err != nil {
-			log.Fatalf("Failed to read response body: %v", err)
-		}
+	defer response.Body.Close()
 
-		utils.PrintResponse(response, responseBody)
-	},
+	responseBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("Failed to read response body: %v", err)
+	}
+
+	utils.PrintResponse(response, responseBody)
 }
