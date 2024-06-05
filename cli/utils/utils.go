@@ -1,9 +1,13 @@
 package utils
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/cobra"
+	"io"
 	"log"
+	_const "main/const"
 	"net/http"
 )
 
@@ -28,4 +32,30 @@ func PrettyPrintJSON(jsonResponse interface{}) string {
 	}
 
 	return string(jsonFormatted)
+}
+
+func Post(cmd *cobra.Command, args []string, endpoint string) {
+	data := args[0]
+	requestBody := map[string]string{"expression": data}
+
+	jsonReqBody, err := json.MarshalIndent(requestBody, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Request:\n%s\n", string(jsonReqBody))
+
+	response, err := http.Post(_const.URL+endpoint, "application/json", bytes.NewBuffer(jsonReqBody))
+	if err != nil {
+		log.Fatalf("Failed to send POST request: %v", err)
+	}
+
+	defer response.Body.Close()
+
+	responseBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		log.Fatalf("Failed to read response body: %v", err)
+	}
+
+	PrintResponse(response, responseBody)
 }

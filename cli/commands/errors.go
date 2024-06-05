@@ -2,7 +2,6 @@ package commands
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
@@ -33,5 +32,5 @@ func fetchErrors(cmd *cobra.Command, args []string) {
 		log.Fatalf("Failed to parse JSON response: %v", err)
 	}
 
-	fmt.Printf("Response: %s\n", utils.PrettyPrintJSON(jsonResponse))
+	log.Printf("Response: %s\n", utils.PrettyPrintJSON(jsonResponse))
 }

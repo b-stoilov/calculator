@@ -11,7 +11,8 @@ func main() {
 	rootCmd.AddCommand(
 		commands.ServerStartCmd,
 		commands.ErrorsCmd,
-		commands.EvaluateCmd)
+		commands.EvaluateCmd,
+		commands.ValidateCmd)
 
 	err := rootCmd.Execute()
 	if err != nil {
