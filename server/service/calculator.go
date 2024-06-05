@@ -2,14 +2,15 @@ package service
 
 import (
 	"Calculator/models"
+	"errors"
 	"fmt"
 )
 
-func Calculate(expression models.Expression) int {
+func Calculate(expression models.Expression) (int, error) {
 	var result int
 
 	if len(expression.Operations) == 0 {
-		return expression.Numbers[0]
+		return expression.Numbers[0], nil
 	}
 
 	for _, operation := range expression.Operations {
@@ -29,7 +30,13 @@ func Calculate(expression models.Expression) int {
 			result = multiply(x, y)
 			numbers[1] = result
 		case "/":
-			result = divide(x, y)
+			var err error
+			result, err = divide(x, y)
+
+			if err != nil {
+				return 0, err
+			}
+
 			numbers[1] = result
 		default:
 			fmt.Println("unsupported operation")
@@ -38,7 +45,7 @@ func Calculate(expression models.Expression) int {
 		expression.Numbers = expression.Numbers[1:]
 	}
 
-	return result
+	return result, nil
 }
 
 func add(x, y int) int {
@@ -53,6 +60,10 @@ func multiply(x, y int) int {
 	return x * y
 }
 
-func divide(x, y int) int {
-	return x / y
+func divide(x, y int) (int, error) {
+	if y == 0 {
+		return 0, errors.New("can't divide by 0")
+	}
+
+	return x / y, nil
 }

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"Calculator/models"
 	"Calculator/store"
 	"errors"
+	"strings"
 )
 
 type ValidateResultDTO struct {
@@ -22,40 +22,28 @@ func Validate(expressionString string, store *store.Store, url string) ValidateR
 
 }
 
-func validateSupportedOperations(expression models.Expression) error {
-	if expression.NumbersDetectedButNotOperations() {
-		return errors.New("unsupported operation")
-	}
-
-	return nil
-}
-
-func validateMathQuestion(expression models.Expression) error {
-
-	if expression.EmptyExpression() {
+func validateCorrectPattern(expression string) error {
+	if !beginningSentencePattern.MatchString(expression) {
 		return errors.New("non-math question")
 	}
 
 	return nil
 }
 
-func validateCorrectSyntax(expression models.Expression) error {
-	if len(expression.Operations)+1 != len(expression.Numbers) {
+func validateSyntax(expression string) error {
+	if !strings.HasSuffix(expression, "?") {
 		return errors.New("invalid syntax")
 	}
 
 	return nil
 }
 
-func performValidations(expression models.Expression) error {
-	err := validateSupportedOperations(expression)
+func performValidations(expression string) error {
+	// check question begins with "What is..."
+	err := validateCorrectPattern(expression)
 
 	if err == nil {
-		err = validateMathQuestion(expression)
-	}
-
-	if err == nil {
-		err = validateCorrectSyntax(expression)
+		err = validateSyntax(expression)
 	}
 
 	return err

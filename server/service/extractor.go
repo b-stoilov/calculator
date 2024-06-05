@@ -3,45 +3,71 @@ package service
 import (
 	"Calculator/models"
 	"Calculator/utils"
-	"fmt"
+	"errors"
 	"regexp"
-	"slices"
+	"strconv"
 	"strings"
 )
 
-var re = regexp.MustCompile("[0-9]+")
+var beginningSentencePattern = regexp.MustCompile(`What is`)
+var unsupportedOperations = []string{"squared", "cubed", "square root"}
 
-func ExtractExpression(expressionString string) models.Expression {
+func ExtractExpression(expressionString string) (models.Expression, error) {
 	expressionString = utils.ConvertOperations(expressionString)
-	numbers := extractNumbers(expressionString)
-	operations := extractOperations(expressionString)
+
+	err := performValidations(expressionString)
+	if err != nil {
+		return models.Expression{}, err
+	}
+
+	expressionString = strings.TrimSuffix(expressionString, "?")
+	trimmedExpressionArray := strings.Fields(expressionString)[2:]
+
+	// check after what is only ints and operations
+	numbers, operations, err := extractNumbersAndOperations(trimmedExpressionArray)
+
+	if err != nil {
+		return models.Expression{}, err
+	}
 
 	expression := models.Expression{Numbers: numbers, Operations: operations}
 
-	return expression
+	return expression, nil
 }
 
-func extractNumbers(expressionString string) []int {
-	fmt.Println(expressionString)
-
-	numbersInString := re.FindAllString(expressionString, -1)
-	numbers := utils.ConvertToIntegers(numbersInString)
-
-	return numbers
-}
-
-func extractOperations(expression string) []string {
+func extractNumbersAndOperations(wordsArray []string) ([]int, []string, error) {
+	var numbers []int
 	var operations []string
 
-	allowedOperations := []string{"+", "-", "/", "*"}
+	for i, word := range wordsArray {
+		if i%2 == 0 {
+			num, err := strconv.Atoi(word)
+			if err != nil {
+				return nil, nil, errors.New("invalid syntax")
+			}
 
-	for _, word := range splitExpressionToWords(expression) {
-		if slices.Contains(allowedOperations, word) {
+			numbers = append(numbers, num)
+		} else {
+			err := validateSupportedOperation(word)
+			if err != nil {
+				return nil, nil, err
+			}
+
 			operations = append(operations, word)
 		}
 	}
 
-	return operations
+	return numbers, operations, nil
+}
+
+func validateSupportedOperation(operation string) error {
+	for _, unsupportedOperation := range unsupportedOperations {
+		if operation == unsupportedOperation {
+			return errors.New("unsupported operation")
+		}
+	}
+
+	return nil
 }
 
 func splitExpressionToWords(expression string) []string {

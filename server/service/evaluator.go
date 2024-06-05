@@ -12,9 +12,7 @@ type EvaluateResultDTO struct {
 func Evaluate(expressionString string, store *store.Store, url string) (EvaluateResultDTO, error) {
 	rawExpression := expressionString
 
-	expression := ExtractExpression(expressionString)
-
-	err := performValidations(expression)
+	expression, err := ExtractExpression(expressionString)
 
 	if err != nil {
 		store.Set(rawExpression, models.Error{Expression: rawExpression, URL: url, Type: err.Error()})
@@ -22,7 +20,11 @@ func Evaluate(expressionString string, store *store.Store, url string) (Evaluate
 		return EvaluateResultDTO{}, err
 	}
 
-	result := Calculate(expression)
+	result, err := Calculate(expression)
+
+	if err != nil {
+		return EvaluateResultDTO{}, err
+	}
 
 	return EvaluateResultDTO{result}, nil
 }
