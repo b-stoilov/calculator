@@ -13,24 +13,28 @@ var beginningSentencePattern = regexp.MustCompile(`What is`)
 var unsupportedOperations = []string{"squared", "cubed", "square root"}
 
 func ExtractExpression(expressionString string) (models.Expression, error) {
-	expressionString = utils.ConvertOperations(expressionString)
+	expressionString = utils.ConvertSupportedOperations(expressionString)
 
-	err := performValidations(expressionString)
+	// validate if pattern of question is correct
+	err := performPreExpressionValidations(expressionString)
 	if err != nil {
 		return models.Expression{}, err
 	}
 
 	expressionString = strings.TrimSuffix(expressionString, "?")
-	trimmedExpressionArray := strings.Fields(expressionString)[2:]
+	wordsArray := strings.Fields(expressionString)[2:]
 
-	// check after what is only ints and operations
-	numbers, operations, err := extractNumbersAndOperations(trimmedExpressionArray)
-
+	numbers, operations, err := extractNumbersAndOperations(wordsArray)
 	if err != nil {
 		return models.Expression{}, err
 	}
 
 	expression := models.Expression{Numbers: numbers, Operations: operations}
+
+	err = performPostExpressionValidations(expression)
+	if err != nil {
+		return models.Expression{}, err
+	}
 
 	return expression, nil
 }
@@ -68,14 +72,4 @@ func validateSupportedOperation(operation string) error {
 	}
 
 	return nil
-}
-
-func splitExpressionToWords(expression string) []string {
-	var words []string
-
-	for _, word := range strings.Fields(expression) {
-		words = append(words, word)
-	}
-
-	return words
 }

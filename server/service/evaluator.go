@@ -10,12 +10,12 @@ type EvaluateResultDTO struct {
 }
 
 func Evaluate(expressionString string, store *store.Store, url string) (EvaluateResultDTO, error) {
-	rawExpression := expressionString
-
 	expression, err := ExtractExpression(expressionString)
 
 	if err != nil {
-		store.Set(rawExpression, models.Error{Expression: rawExpression, URL: url, Type: err.Error()})
+		store.Set(
+			expressionString,
+			models.Error{Expression: expressionString, URL: url, Frequency: 1, Type: err.Error()})
 
 		return EvaluateResultDTO{}, err
 	}
