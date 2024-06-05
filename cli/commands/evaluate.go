@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"Calculator/cli/utils"
 	"bytes"
+	"cli/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -24,7 +24,7 @@ type EvaluateRequest struct {
 var EvaluateCmd = &cobra.Command{
 	Use:   "evaluate [expression]",
 	Short: "Send a POST request",
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		data := args[0]
 		requestBody := map[string]string{"expression": data}
