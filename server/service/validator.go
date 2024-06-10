@@ -1,9 +1,9 @@
 package service
 
 import (
-	"Calculator/models"
-	"Calculator/store"
 	"errors"
+	"server/models"
+	"server/store"
 	"strings"
 )
 

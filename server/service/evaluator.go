@@ -1,8 +1,8 @@
 package service
 
 import (
-	"Calculator/models"
-	"Calculator/store"
+	"server/models"
+	"server/store"
 )
 
 type EvaluateResultDTO struct {

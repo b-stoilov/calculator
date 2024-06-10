@@ -1,10 +1,10 @@
 package service
 
 import (
-	"Calculator/models"
-	"Calculator/utils"
 	"errors"
 	"regexp"
+	"server/models"
+	"server/utils"
 	"strconv"
 	"strings"
 )

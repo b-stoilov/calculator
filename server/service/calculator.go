@@ -1,9 +1,9 @@
 package service
 
 import (
-	"Calculator/models"
 	"errors"
 	"fmt"
+	"server/models"
 )
 
 func Calculate(expression models.Expression) (int, error) {

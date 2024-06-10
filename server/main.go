@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Calculator/store"
 	"fmt"
 	"net/http"
+	"server/store"
 )
 
 func main() {

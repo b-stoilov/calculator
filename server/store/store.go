@@ -1,6 +1,6 @@
 package store
 
-import "Calculator/models"
+import "server/models"
 
 type Store struct {
 	data map[string]models.Error

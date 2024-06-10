@@ -1,10 +1,10 @@
 package main
 
 import (
-	"Calculator/service"
-	"Calculator/store"
 	"encoding/json"
 	"net/http"
+	"server/service"
+	"server/store"
 )
 
 type ExpressionRequestDTO struct {
