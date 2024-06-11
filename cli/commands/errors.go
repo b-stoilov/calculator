@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"io"
 	"log"
-	_const "main/const"
+	"main/const"
 	"main/utils"
 	"net/http"
 )
@@ -26,7 +26,6 @@ func fetchErrors(cmd *cobra.Command, args []string) {
 
 	defer response.Body.Close()
 	body, _ := io.ReadAll(response.Body)
-
 	var jsonResponse []map[string]interface{}
 	if err := json.Unmarshal(body, &jsonResponse); err != nil {
 		log.Fatalf("Failed to parse JSON response: %v", err)

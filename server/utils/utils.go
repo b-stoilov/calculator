@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"Calculator/models"
+	"server/models"
 	"strings"
 )
 
